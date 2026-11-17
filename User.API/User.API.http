@@ -1,0 +1,52 @@
+@User.API_HostAddress = https://localhost:7146
+
+
+
+
+
+
+
+POST {{User.API_HostAddress}}/api/users1
+Content-Type: application/json
+
+{
+  "Username" : "Becky",
+  "Password" : "789456",
+  "FirstName" : "Willow",
+  "LastName" : "Jeans"
+}
+
+###
+
+
+
+
+POST {{User.API_HostAddress}}/api/users1
+Content-Type: application/json
+
+{
+   "Username" : "Kim",
+  "Password" : "789777456",
+  "FirstName" : "Kim",
+  "LastName" : "Possible"
+}
+
+###
+
+GET {{User.API_HostAddress}}/api/users1
+
+###
+
+@id=0
+PUT {{User.API_HostAddress}}/api/users1/2
+Content-Type: application/json
+
+{
+    "id" : 2,
+   "Username" : "Kim",
+  "Password" : "789777456",
+  "FirstName" : "Kimberly",
+  "LastName" : "Possible"
+}
+
+###
