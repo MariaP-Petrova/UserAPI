@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using User.API.Database;
+using User.API.DTO;
 using User.API.Entity;
 
 namespace User.API.Controllers
@@ -23,14 +24,23 @@ namespace User.API.Controllers
 
         // GET: api/Users1
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Entity.User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users
+                .Select(u=> new UserDTO
+                {
+                    Id = u.Id,
+                    Username = u.Username,
+                    Password = u.Password,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName
+                })
+                .ToListAsync();
         }
 
         // GET: api/Users1/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Entity.User>> GetUser(int id)
+        public async Task<ActionResult<UserDTO>> GetUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
 
@@ -39,18 +49,32 @@ namespace User.API.Controllers
                 return NotFound();
             }
 
-            return user;
+            return new UserDTO
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Password = user.Password,
+                FirstName = user.FirstName,
+                LastName = user.LastName
+            };
         }
 
         // PUT: api/Users1/5
         
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, Entity.User user)
+        public async Task<IActionResult> PutUser(int id, EditUserDTO dto)
         {
-            if (id != user.Id)
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null)
             {
                 return BadRequest();
             }
+            
+            user.Username = dto.Username;
+            user.Password = dto.Password;
+            user.FirstName = dto.FirstName;
+            user.LastName = dto.LastName;
 
             _context.Entry(user).State = EntityState.Modified;
 
@@ -74,14 +98,29 @@ namespace User.API.Controllers
         }
 
         // POST: api/Users1
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        
         [HttpPost]
-        public async Task<ActionResult<Entity.User>> PostUser(Entity.User user)
+        public async Task<ActionResult<UserDTO>> PostUser(CreateUserDTO dto)
         {
+            var user = new Entity.User
+            {
+                Username = dto.Username,
+                Password = dto.Password,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName
+            };  
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            var result = new UserDTO
+            {
+                Id = user.Id,
+                Username = user.Username,
+                FirstName = user.FirstName,
+            };
+
+            return CreatedAtAction("GetUser", new { id = user.Id }, user); 
         }
 
         // DELETE: api/Users1/5
