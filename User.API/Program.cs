@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using User.API.Database;
+using User.API.Repository;
+
 
 namespace User.API
 {
@@ -15,8 +17,10 @@ namespace User.API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            
             builder.Services.AddDbContext<UserContext>(opt =>
-                opt.UseInMemoryDatabase("UserList"));
+                opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddScoped<Repository.IUserRepository, Repository.UserRepository>();
 
             var app = builder.Build();
 

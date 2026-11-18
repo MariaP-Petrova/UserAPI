@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using User.API.Database;
 using User.API.DTO;
 using User.API.Entity;
+using User.API.Repository;
 
 namespace User.API.Controllers
 {
@@ -15,48 +16,52 @@ namespace User.API.Controllers
     [ApiController]
     public class Users1Controller : ControllerBase
     {
-        private readonly UserContext _context;
+        private readonly IUserRepository _userRepository;
 
-        public Users1Controller(UserContext context)
+        public Users1Controller(IUserRepository userRepository)
         {
-            _context = context;
+            _userRepository = userRepository;
         }
 
         // GET: api/Users1
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
         {
-            return await _context.Users
-                .Select(u=> new UserDTO
-                {
-                    Id = u.Id,
-                    Username = u.Username,
-                    Password = u.Password,
-                    FirstName = u.FirstName,
-                    LastName = u.LastName
-                })
-                .ToListAsync();
+            var users = await _userRepository.GetAllAsync();
+
+
+            var result = users.Select(u => new UserDTO
+            {
+                Id = u.Id,
+                Username = u.Username,
+                FirstName = u.FirstName,
+                LastName = u.LastName
+            });
+
+
+                return Ok(result);
         }
 
         // GET: api/Users1/5
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDTO>> GetUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _userRepository.GetByIdAsync(id);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            return new UserDTO
+            var result = new UserDTO
             {
                 Id = user.Id,
                 Username = user.Username,
-                Password = user.Password,
                 FirstName = user.FirstName,
                 LastName = user.LastName
             };
+
+            return Ok(result);
         }
 
         // PUT: api/Users1/5
@@ -64,7 +69,7 @@ namespace User.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, EditUserDTO dto)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _userRepository.GetByIdAsync(id);
 
             if (user == null)
             {
@@ -72,19 +77,18 @@ namespace User.API.Controllers
             }
             
             user.Username = dto.Username;
-            user.Password = dto.Password;
             user.FirstName = dto.FirstName;
             user.LastName = dto.LastName;
 
-            _context.Entry(user).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _userRepository.UpdateAsync(user);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                var existingUser = await _userRepository.GetByIdAsync(id);
+                if (existingUser == user)
                 {
                     return NotFound();
                 }
@@ -110,38 +114,34 @@ namespace User.API.Controllers
                 LastName = dto.LastName
             };  
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            await _userRepository.AddAsync(user);
 
             var result = new UserDTO
             {
                 Id = user.Id,
                 Username = user.Username,
                 FirstName = user.FirstName,
+                LastName = user.LastName
             };
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user); 
+            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user); 
         }
 
         // DELETE: api/Users1/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
+           await _userRepository.DeleteAsync(id);
 
             return NoContent();
         }
 
-        private bool UserExists(int id)
-        {
-            return _context.Users.Any(e => e.Id == id);
-        }
+       
     }
 }
