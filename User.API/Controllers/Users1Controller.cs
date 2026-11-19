@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using User.API.Database;
-using User.API.DTO;
-using User.API.Entity;
-using User.API.Repository;
+using User.Data.Database;
+using User.Data.DTO;
+using User.Data.Entity;
+using User.Data.Repository;
 
 namespace User.API.Controllers
 {
@@ -106,7 +102,7 @@ namespace User.API.Controllers
         [HttpPost]
         public async Task<ActionResult<UserDTO>> PostUser(CreateUserDTO dto)
         {
-            var user = new Entity.User
+            var user = new User.Data.Entity.User
             {
                 Username = dto.Username,
                 Password = dto.Password,

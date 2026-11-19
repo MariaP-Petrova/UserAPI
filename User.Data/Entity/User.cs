@@ -1,4 +1,4 @@
-﻿namespace User.API.Entity;
+﻿namespace User.Data.Entity;
 
     public class User
     {
@@ -7,8 +7,8 @@
         public string Password { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-    
-        
 
-}
+
+    }
+
 

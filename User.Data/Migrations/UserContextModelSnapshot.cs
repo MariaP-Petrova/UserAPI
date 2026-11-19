@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using User.API.Database;
+using User.Data.Database;
 
 #nullable disable
 
-namespace User.API.Migrations
+namespace User.Data.Migrations
 {
     [DbContext(typeof(UserContext))]
     partial class UserContextModelSnapshot : ModelSnapshot
@@ -21,7 +21,7 @@ namespace User.API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("User.API.Entity.User", b =>
+            modelBuilder.Entity("User.Data.Entity.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

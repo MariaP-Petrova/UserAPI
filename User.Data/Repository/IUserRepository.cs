@@ -1,4 +1,4 @@
-﻿namespace User.API.Repository
+﻿namespace User.Data.Repository
 {
     public interface IUserRepository
     {

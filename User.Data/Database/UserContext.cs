@@ -1,13 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+using Microsoft.EntityFrameworkCore;
+using User.Data.Entity;
 
-namespace User.API.Database;
-
+namespace User.Data.Database
+{
     public class UserContext : DbContext
     {
         public UserContext(DbContextOptions<UserContext> options)
             : base(options)
         {
         }
-        public DbSet<Entity.User> Users { get; set; }
+        public DbSet<User.Data.Entity.User> Users { get; set; }
     }
-
+}

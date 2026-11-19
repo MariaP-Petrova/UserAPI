@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using User.API.Database;
-using User.API.Repository;
+using User.Data.Database;
+using User.Data.Repository;
 
 
 namespace User.API
@@ -20,7 +20,7 @@ namespace User.API
             
             builder.Services.AddDbContext<UserContext>(opt =>
                 opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-            builder.Services.AddScoped<Repository.IUserRepository, Repository.UserRepository>();
+            builder.Services.AddScoped<User.Data.Repository.IUserRepository, User.Data.Repository.UserRepository>();
 
             var app = builder.Build();
 

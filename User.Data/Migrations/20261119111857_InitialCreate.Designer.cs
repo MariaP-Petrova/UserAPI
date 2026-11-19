@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using User.API.Database;
+using User.Data.Database;
 
 #nullable disable
 
-namespace User.API.Migrations
+namespace User.Data.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20261118121357_InitialCreate")]
+    [Migration("20261119111857_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -24,7 +24,7 @@ namespace User.API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("User.API.Entity.User", b =>
+            modelBuilder.Entity("User.Data.Entity.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

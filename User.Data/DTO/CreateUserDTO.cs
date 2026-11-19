@@ -1,4 +1,4 @@
-﻿namespace User.API.DTO;
+﻿namespace User.Data.DTO;
 
     public class CreateUserDTO
     {
