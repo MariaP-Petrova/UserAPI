@@ -40,6 +40,11 @@ namespace User.Data.Repository
                 await _context.SaveChangesAsync();
             }
         }
-        
+
+        public async Task<User.Data.Entity.User> GetByUsernameAsync(string username)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+        }
+
     }
 }

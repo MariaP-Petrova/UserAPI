@@ -5,6 +5,9 @@ using User.Data.Database;
 using User.Data.DTO;
 using User.Data.Entity;
 using User.Data.Repository;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using UserEntity = User.Data.Entity.User;
 
 namespace User.API.Controllers
 {
@@ -13,13 +16,16 @@ namespace User.API.Controllers
     public class Users1Controller : ControllerBase
     {
         private readonly IUserRepository _userRepository;
+        private readonly IPasswordHasher<UserEntity> _passwordHasher;
 
-        public Users1Controller(IUserRepository userRepository)
+        public Users1Controller(IUserRepository userRepository,IPasswordHasher<UserEntity> passwordHasher)
         {
             _userRepository = userRepository;
+            _passwordHasher = passwordHasher;
         }
 
         // GET: api/Users1
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
         {
@@ -105,10 +111,10 @@ namespace User.API.Controllers
             var user = new User.Data.Entity.User
             {
                 Username = dto.Username,
-                Password = dto.Password,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName
-            };  
+            };
+            user.Password = _passwordHasher.HashPassword(user, dto.Password);
 
             await _userRepository.AddAsync(user);
 

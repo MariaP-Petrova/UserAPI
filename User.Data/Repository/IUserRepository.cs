@@ -7,7 +7,8 @@
         Task <Entity.User> AddAsync(Entity.User user);
         Task UpdateAsync (Entity.User user);
         Task DeleteAsync(int id);
+        Task<User.Data.Entity.User> GetByUsernameAsync(string username);
 
-        
+
     }
 }
